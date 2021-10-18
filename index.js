@@ -88,7 +88,7 @@ app.use(express.json())
 let fileAccess = false;
 let listedUsersRaw = fs.readFileSync('listedUsers.json');
 let listedUsers = JSON.parse(listedUsersRaw);
-app.post('/process', (req, res) => {
+app.post('/webdav/process', (req, res) => {
     let userName = req.body.userName;
     console.log(req.body);
     if (!listedUsers.includes(userName)) {
@@ -159,7 +159,7 @@ app.post('/process', (req, res) => {
     })
 })
 
-app.get('/status/:fileId', (req, res) => {
+app.get('/webdav/status/:fileId', (req, res) => {
     let fileId = req.params.fileId;
     console.log(downloadCache, downloadCache[fileId])
     if (downloadCache[fileId]) {
@@ -183,7 +183,7 @@ setInterval(() => {
 }, 1000 * 60 * 5);
 
 
-app.use('/static', express.static('public'))
+app.use('/webdav/static', express.static('public'))
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`)
