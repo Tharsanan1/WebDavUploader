@@ -23,7 +23,8 @@ var download = function (protocol, url, dest, fileId, cb) {
             downloadCache[fileId] = {
                 downloadPercentage : 0,
                 status : "Error - Could not calculate file size.",
-                totalSize : response.headers["content-length"]
+                totalSize : response.headers["content-length"],
+                filePath : dest
             };
             cb(null, "Could not calculate file size.");
         }
@@ -38,7 +39,8 @@ var download = function (protocol, url, dest, fileId, cb) {
         downloadCache[fileId] = {
             downloadPercentage : 0,
             status : "Downloading",
-            totalSize : response.headers["content-length"]
+            totalSize : response.headers["content-length"],
+            filePath : dest
         };
         response.pipe(file);
         let downloaded = 0;
@@ -162,8 +164,11 @@ app.post('/webdav/process', (req, res) => {
 app.get('/webdav/status/:fileId', (req, res) => {
     let fileId = req.params.fileId;
     console.log(downloadCache, downloadCache[fileId])
+    console.log(downloadCache[fileId].filePath);
     if (downloadCache[fileId]) {
+        
         if (downloadCache[fileId]["status"] === "Success") {
+            fs.unlink(downloadCache[fileId].filePath, function() {});
             setTimeout(() => {
                 delete downloadCache[fileId]
             }, 1000 * 5);
@@ -177,6 +182,7 @@ app.get('/webdav/status/:fileId', (req, res) => {
 setInterval(() => {
     for (const key in downloadCache) {
         if (downloadCache[key]["status"] === "Success") {
+            fs.unlink(downloadCache[key].filePath, function(){});
             delete downloadCache[key];
         }
     }
