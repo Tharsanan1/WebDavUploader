@@ -163,10 +163,7 @@ app.post('/webdav/process', (req, res) => {
 
 app.get('/webdav/status/:fileId', (req, res) => {
     let fileId = req.params.fileId;
-    console.log(downloadCache, downloadCache[fileId])
-    console.log(downloadCache[fileId].filePath);
     if (downloadCache[fileId]) {
-        
         if (downloadCache[fileId]["status"] === "Success") {
             fs.unlink(downloadCache[fileId].filePath, function() {});
             setTimeout(() => {
