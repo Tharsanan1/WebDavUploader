@@ -62,6 +62,9 @@ function getStatus() {
         let data = await res.text();
         if (res.status === 200) {
             let json = JSON.parse(data);
+            if (json.status === "Success") {
+                alert("File upload success.");
+            }
             document.getElementById("statusDiv").innerHTML = data;
         } else {
             alert("Something went wrong.");
