@@ -27,6 +27,7 @@ var download = function (protocol, url, dest, fileId, cb) {
                 filePath : dest
             };
             cb(null, "Could not calculate file size.");
+            return;
         }
         if (response.headers["content-length"] > maximumSizeInMb * 1024 * 1024) {
             downloadCache[fileId] = {
@@ -35,6 +36,7 @@ var download = function (protocol, url, dest, fileId, cb) {
                 totalSize : response.headers["content-length"]
             };
             cb(null, "requested file exceeding the file size limit");
+            return;
         }
         downloadCache[fileId] = {
             downloadPercentage : 0,
@@ -101,6 +103,10 @@ app.post('/webdav/process', (req, res) => {
     let fileUrl = req.body.fileUrl;
     let dmsUrl = req.body.dmsUrl;
     let fileName = req.body.fileName;
+    if (fs.existsSync(process.env.DOWNLOAD_FILE_FOLDER + fileName)) {
+        res.status(400).send("Already this file is submitted to download.");
+        return;
+    }
     let currentTime = new Date();
     let month = currentTime.getMonth() + 1;
     let year = currentTime.getFullYear();
