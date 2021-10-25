@@ -1,4 +1,3 @@
-// curl --progress-bar -T sqid.zip https://dms.uom.lk/remote.php/dav/files/be13647c-307e-1035-81f4-4d56146fb74c/ --user "150630d:Tharsa@321" | tee /dev/null
 
 var http = require('http')
 let https = require('https')
